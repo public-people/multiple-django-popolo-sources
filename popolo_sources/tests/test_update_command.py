@@ -1,10 +1,10 @@
 from contextlib import contextmanager
-from mock import patch
+import io
 import sys
+from unittest.mock import patch
 
 from django.core.management import call_command, CommandError
 from django.test import TestCase
-from django.utils import six
 
 from popolo_sources.models import PopoloSource
 from popolo_sources.importer import PopoloSourceImporter
@@ -13,7 +13,7 @@ from popolo_sources.importer import PopoloSourceImporter
 @contextmanager
 def capture_output():
     # Suggested here: http://stackoverflow.com/a/17981937/223092
-    new_out, new_err = six.StringIO(), six.StringIO()
+    new_out, new_err = io.StringIO(), io.StringIO()
     old_out, old_err = sys.stdout, sys.stderr
     try:
         sys.stdout, sys.stderr = new_out, new_err
@@ -43,13 +43,13 @@ class UpdateCommandTests(TestCase):
         mock_importer.return_value.update_from_source.assert_called_once_with()
 
     def test_update_source_id_does_not_exist(self, mock_importer):
-        with self.assertRaisesRegexp(CommandError, r'^Source not found$'):
+        with self.assertRaisesRegex(CommandError, r'^Source not found$'):
             with capture_output():
                 call_command('popolo_sources_update', '1')
         mock_importer.assert_not_called()
 
     def test_update_source_url_does_not_exist(self, mock_importer):
-        with self.assertRaisesRegexp(CommandError, r'^Source not found$'):
+        with self.assertRaisesRegex(CommandError, r'^Source not found$'):
             with capture_output():
                 call_command('popolo_sources_update', 'http://example.com/asdpofiaj')
         mock_importer.assert_not_called()
@@ -57,13 +57,13 @@ class UpdateCommandTests(TestCase):
     def test_invalid_url(self, mock_importer):
         # It's remarkably hard to find something that urlsplit won't
         # parse, but this malformed IPv6 address does it:
-        with self.assertRaisesRegexp(CommandError, r'^Malformed argument'):
+        with self.assertRaisesRegex(CommandError, r'^Malformed argument'):
             call_command('popolo_sources_update', 'http://[::1')
         mock_importer.assert_not_called()
 
     def test_create_specified_for_an_existing_source(self, mock_importer):
         PopoloSource.objects.create(url='http://example.com/foo.json')
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 CommandError,
                 r'You specified --create, but that source already exists'):
             call_command(
@@ -73,7 +73,7 @@ class UpdateCommandTests(TestCase):
         mock_importer.assert_not_called()
 
     def test_create_only_works_with_a_url(self, mock_importer):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 CommandError,
                 r'If you specify --create, the argument must be a URL'):
             call_command(
@@ -97,7 +97,7 @@ class UpdateCommandTests(TestCase):
             PopoloSource.objects.create(url='http://example.com/bar.json'),
         ]
         with capture_output() as (out, err):
-            with self.assertRaisesRegexp(CommandError, r'^Source not found'):
+            with self.assertRaisesRegex(CommandError, r'^Source not found'):
                 call_command('popolo_sources_update', 'http://foo')
         self.assertEqual(
             out.getvalue().strip().splitlines(),

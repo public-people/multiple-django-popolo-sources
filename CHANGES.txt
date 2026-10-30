@@ -1,7 +1,14 @@
+0.1.0
+    * Support Python 3.12+ and Django 6.1.
+    * Migrate packaging to pyproject.toml and uv.
+    * Install the public-people/django-popolo fork from GitHub for tests.
+    * Add explicit ON DELETE behaviour to database models and migrations.
+    * Remove Python 2 and Django < 2 compatibility code.
+    * Use the standard library mock/io/urllib modules in tests.
 0.0.3
     * The importer now notifies observers of objects that have
       disappeared from the Popolo source.
 0.0.2
-    * Database migrations (for Django >= 1.7) have been added. 
+    * Database migrations (for Django >= 1.7) have been added.
 0.0.1
     * Initial release.

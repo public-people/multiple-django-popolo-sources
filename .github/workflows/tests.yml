@@ -1,0 +1,84 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Python 3.14 / Django 6.1
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/multiple-django-popolo-sources
+
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v7
+        with:
+          path: src/multiple-django-popolo-sources
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: src/multiple-django-popolo-sources/uv.lock
+
+      - name: Install dependencies
+        run: uv sync --locked --group test
+
+      - name: Check for missing migrations
+        run: |
+          uv run --no-sync python - <<'PY'
+          from django.conf import settings
+
+          settings.configure(
+              DATABASES={
+                  'default': {
+                      'ENGINE': 'django.db.backends.sqlite3',
+                      'NAME': ':memory:',
+                  }
+              },
+              INSTALLED_APPS=(
+                  'django.contrib.auth',
+                  'django.contrib.contenttypes',
+                  'popolo',
+                  'popolo_sources',
+              ),
+              MIDDLEWARE=[],
+              SECRET_KEY='ci-only',
+              USE_TZ=True,
+              DEFAULT_AUTO_FIELD='django.db.models.AutoField',
+          )
+
+          import django
+          django.setup()
+
+          from django.core.management import call_command
+          call_command(
+              'makemigrations',
+              'popolo_sources',
+              check=True,
+              dry_run=True,
+              verbosity=1,
+          )
+          PY
+
+      - name: Run tests
+        run: |
+          uv run --no-sync coverage run ./runtests.py
+          uv run --no-sync coverage report

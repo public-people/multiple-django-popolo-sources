@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.db import models, migrations
+import django
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -17,7 +15,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('deleted_from_source', models.BooleanField(default=False)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
             ],
             options={
             },
@@ -36,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='linktopopolosource',
             name='popolo_source',
-            field=models.ForeignKey(to='popolo_sources.PopoloSource'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='popolo_sources.PopoloSource'),
             preserve_default=True,
         ),
     ]

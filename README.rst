@@ -1,6 +1,9 @@
 Manage data from multiple sources using django-popolo
 =====================================================
 
+.. image:: https://github.com/public-people/multiple-django-popolo-sources/actions/workflows/tests.yml/badge.svg
+   :target: https://github.com/public-people/multiple-django-popolo-sources/actions/workflows/tests.yml
+
 This package provides a PopoloSource Django model to represent a
 URL from which you can fetch Popolo JSON data.  It allows you to
 import data from multiple such sources into django-popolo models
@@ -57,15 +60,39 @@ non-deleted top-level django-popolo with code like:
 
 .. code:: python
 
-    for ltps in LinkToPopoloSource.filter(deleted_from_source=False):
-        print ltps.popolo_object
+    for ltps in LinkToPopoloSource.objects.filter(deleted_from_source=False):
+        print(ltps.popolo_object)
+
+Requirements
+------------
+
+This package requires Python 3.12+ and Django 6.1+.
+
+It is designed to work with the public-people fork of django-popolo. That fork
+is not declared as a package dependency because it is used from a sibling
+repository in the Public People workspace:
+
+.. code:: bash
+
+    public-people/
+    ├── multiple-django-popolo-sources/
+    └── django-popolo/
 
 Tests
 -----
 
-To run the tests you can do:
+This project uses `uv <https://docs.astral.sh/uv/>`_ and a standard
+``pyproject.toml``. Set up the test environment with:
 
 .. code:: bash
 
-    pip install -e .[test]
-    ./runtests.py
+    uv sync --group test
+
+Run the tests with:
+
+.. code:: bash
+
+    uv run coverage run ./runtests.py
+    uv run coverage report
+
+The test suite also runs automatically in GitHub Actions.

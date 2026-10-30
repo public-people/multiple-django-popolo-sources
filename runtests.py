@@ -14,19 +14,23 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=(
+            'django.contrib.auth',
             'django.contrib.contenttypes',
             'popolo',
             'popolo_sources',
         ),
-        MIDDLEWARE_CLASSES=[],
+        MIDDLEWARE=[],
         SITE_ID=1,
         SECRET_KEY='this-is-just-for-tests-so-not-that-secret',
-        ROOT_URLCONF='popolo_source.urls',
+        ROOT_URLCONF='popolo_sources.tests.urls',
+        USE_TZ=True,
+        DEFAULT_AUTO_FIELD='django.db.models.AutoField',
     )
 
 django.setup()
 
 from django.test.runner import DiscoverRunner
+
 test_runner = DiscoverRunner(verbosity=1)
 
 failures = test_runner.run_tests(['popolo_sources'])

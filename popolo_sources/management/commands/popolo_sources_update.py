@@ -1,9 +1,7 @@
-from __future__ import print_function, unicode_literals
-
 import re
+from urllib.parse import urlsplit
 
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.six.moves.urllib.parse import urlsplit
 
 from popolo_sources.models import PopoloSource
 from popolo_sources.importer import PopoloSourceImporter
@@ -27,7 +25,7 @@ def get_source(source_arg):
     elif is_url(source_arg):
         ps = PopoloSource.objects.get(url=source_arg)
     else:
-        raise CommandError(u'Malformed argument: {}'.format(source_arg))
+        raise CommandError('Malformed argument: {}'.format(source_arg))
     return ps
 
 

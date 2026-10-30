@@ -11,7 +11,7 @@
             ],
             "contact_details": [
                 {
-                    "contact_type": "twitter",
+                    "type": "twitter",
                     "label": "",
                     "note": "",
                     "value": "sometwitterusernameorother"

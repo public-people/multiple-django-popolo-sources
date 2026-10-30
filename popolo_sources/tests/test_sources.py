@@ -14,3 +14,7 @@ class PopoloSourceTests(TestCase):
             repr(ps),
             "PopoloSource(id={0}, url='http://example.com/popolo.json')".format(ps.id)
         )
+
+    def test_popolo_source_str(self):
+        ps = PopoloSource.objects.create(url='http://example.com/popolo.json')
+        self.assertEqual(str(ps), 'http://example.com/popolo.json')

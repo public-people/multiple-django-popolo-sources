@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.db import models
 
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -9,9 +7,11 @@ from django.contrib.contenttypes.models import ContentType
 class PopoloSource(models.Model):
     url = models.URLField(max_length=255)
 
+    def __str__(self):
+        return self.url
+
     def __repr__(self):
-        fmt = str("PopoloSource(id={0.id}, url='{0.url}')")
-        return fmt.format(self)
+        return "PopoloSource(id={0.id}, url='{0.url}')".format(self)
 
 
 class LinkToPopoloSource(models.Model):
@@ -22,4 +22,5 @@ class LinkToPopoloSource(models.Model):
     object_id = models.PositiveIntegerField()
     popolo_object = GenericForeignKey('content_type', 'object_id')
     # Now the source that this object was created from (or is associated with):
-    popolo_source = models.ForeignKey(PopoloSource)
+    popolo_source = models.ForeignKey(
+        PopoloSource, on_delete=models.CASCADE)

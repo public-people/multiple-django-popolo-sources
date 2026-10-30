@@ -1,11 +1,11 @@
 from contextlib import contextmanager
+import io
 import json
-from mock import patch, Mock
 from os.path import dirname, exists, join
+import re
 import sys
-
-from django.utils import six
-from django.utils.six.moves.urllib.parse import urlsplit
+from unittest.mock import Mock, patch
+from urllib.parse import urlsplit
 
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
@@ -40,7 +40,7 @@ def fake_requests_get(url, *args, **kwargs):
 @contextmanager
 def capture_output():
     # Suggested here: http://stackoverflow.com/a/17981937/223092
-    new_out, new_err = six.StringIO(), six.StringIO()
+    new_out, new_err = io.StringIO(), io.StringIO()
     old_out, old_err = sys.stdout, sys.stderr
     try:
         sys.stdout, sys.stderr = new_out, new_err
@@ -173,16 +173,18 @@ class PopoloSourceTests(TestCase):
         # importing Alice from source:
         importer = PopoloSourceImporter(popolo_source)
         with capture_output() as (out, err):
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     Person.MultipleObjectsReturned,
-                    r"^Unexpectedly found more than 1 objects matching PopoloSource object, collection 'person' and ID 'a1b2' - found 2 instead.$"):
+                    r"^Unexpectedly found more than 1 objects matching "
+                    + re.escape(str(popolo_source))
+                    + r", collection 'person' and ID 'a1b2' - found 2 instead.$"):
                 importer.update_from_source()
 
     def test_unknown_collection(self, faked_get):
         popolo_source = PopoloSource.objects.create(
             url='http://example.com/single-person.json')
         importer = PopoloSourceImporter(popolo_source)
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 Exception,
                 r"Unknown collection 'not-a-collection'"):
             importer.get_existing_django_object('not-a-collection', 'y1z2')

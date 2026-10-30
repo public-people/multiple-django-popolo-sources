@@ -345,29 +345,19 @@ requires-dist = [
 [package.metadata.requires-dev]
 test = [
     { name = "coverage", specifier = ">=7.17.0" },
-    { name = "mysociety-django-popolo", editable = "../django-popolo" },
+    { name = "mysociety-django-popolo", git = "https://github.com/public-people/django-popolo.git?branch=public-people" },
 ]
 
 [[package]]
 name = "mysociety-django-popolo"
-source = { editable = "../django-popolo" }
+version = "0.2.0"
+source = { git = "https://github.com/public-people/django-popolo.git?branch=public-people#2a2abe373be24bea37c0f6eeed61e180bc19d691" }
 dependencies = [
     { name = "django" },
     { name = "django-ajax-selects" },
     { name = "django-model-utils" },
     { name = "django-simple-history" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "coverage", marker = "extra == 'test'", specifier = ">=7.17.0" },
-    { name = "django", specifier = ">=6.1" },
-    { name = "django-ajax-selects", specifier = ">=3.0.3" },
-    { name = "django-model-utils", specifier = ">=5.0.0" },
-    { name = "django-simple-history", specifier = ">=3.13.0" },
-    { name = "faker", marker = "extra == 'test'", specifier = ">=40.44.0" },
-]
-provides-extras = ["test"]
 
 [[package]]
 name = "requests"

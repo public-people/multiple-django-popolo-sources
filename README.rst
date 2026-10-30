@@ -68,15 +68,12 @@ Requirements
 
 This package requires Python 3.12+ and Django 6.1+.
 
-It is designed to work with the public-people fork of django-popolo. That fork
-is not declared as a package dependency because it is used from a sibling
-repository in the Public People workspace:
+It is designed to work with the `public-people fork of django-popolo
+<https://github.com/public-people/django-popolo>`_. The test dependency group
+installs that fork directly from GitHub.
 
-.. code:: bash
-
-    public-people/
-    ├── multiple-django-popolo-sources/
-    └── django-popolo/
+The fork is not a runtime package dependency because applications using this
+package may need to control which django-popolo revision they install.
 
 Tests
 -----

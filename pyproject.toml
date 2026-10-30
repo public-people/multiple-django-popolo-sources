@@ -38,7 +38,7 @@ test = [
 ]
 
 [tool.uv.sources]
-mysociety-django-popolo = { path = "../django-popolo", editable = true }
+mysociety-django-popolo = { git = "https://github.com/public-people/django-popolo.git", branch = "public-people" }
 
 [tool.setuptools.packages.find]
 include = ["popolo_sources*"]
